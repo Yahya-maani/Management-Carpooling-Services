@@ -115,8 +115,8 @@ pipeline {
 
     post {
         always {
-            echo "🧹 Cleaning workspace..."
-            script {
+            node { // On force l'utilisation d'un nœud pour avoir accès au FilePath (Workspace)
+                echo "🧹 Cleaning workspace..."
                 cleanWs()
             }
         }
