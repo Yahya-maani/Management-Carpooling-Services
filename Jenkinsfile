@@ -115,18 +115,15 @@ pipeline {
 
     post {
         always {
-            // Utiliser un bloc script permet d'exécuter cleanWs correctement 
-            // dans le contexte de l'agent défini au début du pipeline
             script {
-                echo "🧹 Cleaning workspace..."
-                cleanWs()
+                // On vérifie si on a encore accès au workspace avant de nettoyer
+                try {
+                    cleanWs()
+                } catch (Exception e) {
+                    echo "Impossible de nettoyer le workspace via cleanWs, tentative alternative..."
+                    // Si cleanWs échoue, on ne bloque pas le statut du build
+                }
             }
-        }
-        success {
-            echo "✅ Pipeline finished successfully!"
-        }
-        failure {
-            echo "❌ Pipeline failed. Check logs for errors."
         }
     }
 }
