@@ -115,7 +115,9 @@ pipeline {
 
     post {
         always {
-            node { // On force l'utilisation d'un nœud pour avoir accès au FilePath (Workspace)
+            // Utiliser un bloc script permet d'exécuter cleanWs correctement 
+            // dans le contexte de l'agent défini au début du pipeline
+            script {
                 echo "🧹 Cleaning workspace..."
                 cleanWs()
             }
