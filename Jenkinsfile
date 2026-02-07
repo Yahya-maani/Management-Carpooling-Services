@@ -56,16 +56,19 @@ pipeline {
             }
         }
 
-      stage('SonarQube') {
+      stage('SonarCloud') {
     steps {
-        echo "🔍 Sonar Analysis..."
-
-        // 'sonar_integration' doit être EXACTEMENT le nom configuré dans Jenkins
-        withSonarQubeEnv('sonar_integration') { 
-            bat "mvn sonar:sonar -Dsonar.projectKey=Management-Carpooling-Services -Dsonar.projectName=Management-Carpooling-Services"
+        withSonarQubeEnv('sonar_integration') {
+            bat """
+            mvn sonar:sonar ^
+              -Dsonar.projectKey=Management-Carpooling-Services ^
+              -Dsonar.organization=yahya-maani ^
+              -Dsonar.host.url=https://sonarcloud.io
+            """
         }
     }
 }
+
 
 stage('Quality Gate') {
     steps {
