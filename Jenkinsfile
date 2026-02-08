@@ -33,8 +33,8 @@ pipeline {
         stage('Test') {
             steps {
                 echo "🧪 Testing..."
-                // forkCount=0 permet de voir les erreurs de tests en direct dans la console Jenkins sous Windows
-                bat 'mvn test -DforkCount=0'
+                // Ajoute CALL ici
+                bat 'call mvn test -DforkCount=0'
             }
             post {
                 always {
@@ -46,7 +46,8 @@ pipeline {
         stage('Package') {
             steps {
                 echo "📦 Packaging..."
-                bat 'mvn package -DskipTests'
+                // Ajoute CALL ici
+                bat 'call mvn package -DskipTests'
             }
             post {
                 success {
@@ -59,7 +60,8 @@ pipeline {
             steps {
                 echo "🔍 SonarQube Analysis..."
                 withSonarQubeEnv('sonar_integration') {
-                    bat "mvn sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME}"
+                    // Ajoute CALL ici
+                    bat "call mvn sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME}"
                 }
             }
         }
