@@ -9,7 +9,7 @@ pipeline {
     environment {
         SONAR_PROJECT_KEY = 'Management-Carpooling-Services'
         SONAR_PROJECT_NAME = 'Management-Carpooling-Services'
-        DOCKER_IMAGE = 'yassiramraoui/management-carpooling-services'
+        DOCKER_IMAGE = 'yahyamaani/management-carpooling-services'
         DOCKER_TAG = 'latest'
         // Assure-toi que Docker Desktop a l'option "Expose daemon on tcp://localhost:2375" cochée
         DOCKER_HOST = 'tcp://127.0.0.1:2375'
