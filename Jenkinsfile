@@ -56,18 +56,18 @@ pipeline {
             }
         }
 
-      stage('SonarCloud') {
+      stage('SonarQube') {
     steps {
+        echo "🔍 SonarQube Analysis..."
         withSonarQubeEnv('sonar_integration') {
             bat """
             mvn sonar:sonar ^
-              -Dsonar.projectKey=Management-Carpooling-Services ^
-              -Dsonar.organization=yahya-maani ^
-              -Dsonar.host.url=https://sonarcloud.io
+              -Dsonar.projectKey=Management-Carpooling-Services
             """
         }
     }
 }
+
 
 
 stage('Quality Gate') {
