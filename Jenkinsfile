@@ -3,7 +3,7 @@ pipeline {
 
     tools {
         maven 'Maven'
-        jdk 'Java17' // Jenkins utilise Java 17 ici
+        jdk 'Java17' 
     }
 
     environment {
@@ -11,7 +11,7 @@ pipeline {
         SONAR_PROJECT_NAME = 'Management-Carpooling-Services'
         DOCKER_IMAGE = 'yassiramraoui/management-carpooling-services'
         DOCKER_TAG = 'latest'
-        // On force Docker à utiliser le port TCP puisque Jenkins est en "Système Local"
+        // Assure-toi que Docker Desktop a l'option "Expose daemon on tcp://localhost:2375" cochée
         DOCKER_HOST = 'tcp://127.0.0.1:2375'
     }
 
@@ -33,7 +33,8 @@ pipeline {
         stage('Test') {
             steps {
                 echo "🧪 Testing..."
-                bat 'mvn test'
+                // forkCount=0 permet de voir les erreurs de tests en direct dans la console Jenkins sous Windows
+                bat 'mvn test -DforkCount=0'
             }
             post {
                 always {
@@ -49,7 +50,7 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'target/*.jar, target/*.war'
+                    archiveArtifacts artifacts: 'target/*.war'
                 }
             }
         }
@@ -58,7 +59,7 @@ pipeline {
             steps {
                 echo "🔍 SonarQube Analysis..."
                 withSonarQubeEnv('sonar_integration') {
-                    bat "mvn sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}"
+                    bat "mvn sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME}"
                 }
             }
         }
@@ -74,7 +75,6 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo "🐳 Docker Build..."
-                // Utilisation de variables d'environnement Jenkins pour plus de clarté
                 bat "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
             }
         }
@@ -85,7 +85,6 @@ pipeline {
                 withCredentials([
                     usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'USER', passwordVariable: 'PASS')
                 ]) {
-                    // @echo off évite d'afficher le mot de passe dans les logs Jenkins
                     bat """
                     @echo off
                     echo %PASS% | docker login -u %USER% --password-stdin
